@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Heliger Borden School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#173a63;
+    --navy-2:#0f2b4c;
+    --blue-bg:#eaf3fb;
+    --blue-bg-2:#dcedfb;
+    --pink:#ec2f6e;
+    --pink-dark:#d81f5e;
+    --yellow:#ffd66b;
+    --white:#ffffff;
+    --ink:#1c2b3a;
+    --muted:#5b6b7c;
+    --line:#e1ebf5;
+    --radius:16px;
+    --shadow: 0 10px 30px rgba(23,58,99,0.10);
+    box-sizing:border-box;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--blue-bg);
+    color:var(--ink);
+    min-height:100%;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  h1,h2,h3,h4{font-family:'Poppins',sans-serif;color:var(--navy);margin:0;}
+  p{line-height:1.6;color:var(--muted);margin:0;}
+  a{text-decoration:none;color:inherit;}
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;cursor:pointer;}
+
+  /* ---------- Layout shell ---------- */
+  .app{max-width:1180px;margin:0 auto;position:relative;}
+  .page-wrap{padding:0 0 60px;}
+  .container{max-width:1040px;margin:0 auto;padding:0 20px;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    padding-top:env(safe-area-inset-top,0px);
+  }
+  .header-inner{
+    max-width:1180px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 20px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .logo{
+    width:42px;height:42px;border-radius:11px;
+    background:linear-gradient(150deg,var(--navy),var(--navy-2));
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .logo svg{width:22px;height:22px;}
+  .brand-text h1{font-size:16px;font-weight:700;letter-spacing:-0.2px;line-height:1.15;}
+  .brand-text .tag{font-size:11.5px;color:var(--pink);font-weight:600;letter-spacing:0.4px;}
+  .brand-text .tag .dot{color:var(--navy);opacity:.35;margin:0 2px;}
+
+  nav.desktop-nav{display:none;gap:6px;align-items:center;}
+  nav.desktop-nav a{
+    padding:9px 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--navy-2);
+    transition:background .15s ease,color .15s ease;
+  }
+  nav.desktop-nav a:hover{background:var(--blue-bg-2);}
+  nav.desktop-nav a.active{background:var(--navy);color:#fff;}
+
+  .menu-btn{
+    width:42px;height:42px;border-radius:11px;border:1px solid var(--line);
+    background:#fff;display:flex;align-items:center;justify-content:center;
+  }
+  .menu-btn svg{width:20px;height:20px;stroke:var(--navy);}
+
+  /* ---------- Mobile slide menu ---------- */
+  .menu-overlay{
+    position:fixed;inset:0;background:rgba(15,30,50,0.45);z-index:100;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .menu-overlay.open{opacity:1;pointer-events:auto;}
+  .menu-panel{
+    position:absolute;top:0;right:0;height:100%;width:min(320px,84vw);
+    background:#fff;transform:translateX(100%);transition:transform .28s ease;
+    padding:calc(20px + env(safe-area-inset-top,0px)) 22px 20px;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .menu-overlay.open .menu-panel{transform:translateX(0);}
+  .menu-panel .close-btn{align-self:flex-end;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+  .menu-panel a{
+    padding:14px 12px;border-radius:12px;font-weight:600;font-size:16px;color:var(--navy-2);
+    display:flex;align-items:center;gap:12px;
+  }
+  .menu-panel a.active{background:var(--blue-bg);color:var(--pink-dark);}
+  .menu-panel a svg{width:19px;height:19px;flex-shrink:0;}
+
+  /* ---------- Breadcrumb ---------- */
+  .crumb{font-size:13px;color:var(--muted);padding:16px 20px 0;max-width:1040px;margin:0 auto;}
+  .crumb span{color:var(--pink-dark);font-weight:600;}
+
+  /* ---------- Hero (generic) ---------- */
+  .hero{
+    background:linear-gradient(180deg,var(--blue-bg-2),var(--blue-bg) 70%);
+    padding:26px 20px 34px;
+    position:relative;overflow:hidden;
+  }
+  .hero-blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.55;}
+  .hero .container{position:relative;z-index:2;}
+  .eyebrow{font-size:14px;color:var(--navy-2);font-weight:600;margin-bottom:6px;}
+  .hero h2{font-size:clamp(26px,5vw,40px);line-height:1.12;font-weight:800;letter-spacing:-0.5px;max-width:640px;}
+  .hero p.lead{margin-top:12px;font-size:15.5px;max-width:520px;}
+  .hero-actions{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 22px;border-radius:12px;font-weight:700;font-size:14.5px;
+    border:none;
+  }
+  .btn-primary{background:var(--pink);color:#fff;box-shadow:0 8px 18px rgba(236,47,110,0.28);}
+  .btn-primary:hover{background:var(--pink-dark);}
+  .btn-ghost{background:#fff;color:var(--navy);border:1.5px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--navy);}
+  .btn-block{width:100%;justify-content:center;}
+
+  /* ---------- Feature grid (home) ---------- */
+  .feature-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:26px;
+  }
+  .feature-card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:16px 14px;text-align:center;
+  }
+  .feature-card .ic{
+    width:38px;height:38px;border-radius:10px;background:var(--blue-bg-2);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 10px;
+  }
+  .feature-card .ic svg{width:19px;height:19px;stroke:var(--navy);}
+  .feature-card span{font-size:13px;font-weight:700;color:var(--navy-2);}
+
+  .photo-banner{
+    margin-top:24px;border-radius:18px;overflow:hidden;position:relative;
+    height:190px;
+  }
+  .photo-banner img{width:100%;height:100%;object-fit:cover;}
+  .photo-banner .caption{
+    position:absolute;right:16px;top:16px;background:rgba(255,255,255,0.92);
+    padding:10px 14px;border-radius:12px;font-family:'Poppins',sans-serif;
+    font-weight:700;color:var(--navy);font-size:13px;text-align:right;line-height:1.35;
+  }
+  .photo-banner .caption .accent{color:var(--pink-dark);}
+
+  /* ---------- Section blocks ---------- */
+  .section{padding:32px 20px;}
+  .section h3.section-title{font-size:22px;margin-bottom:16px;}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .info-card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;
+  }
+  .info-card .head{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+  .info-card .head .ic{
+    width:30px;height:30px;border-radius:9px;background:var(--blue-bg-2);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .info-card .head .ic svg{width:15px;height:15px;stroke:var(--navy);}
+  .info-card .head h4{font-size:14.5px;}
+  .info-card ul{margin:0;padding-left:18px;}
+  .info-card li{font-size:13px;color:var(--muted);margin-bottom:4px;}
+  .info-card p{font-size:13px;}
+
+  /* ---------- Tabs (academics) ---------- */
+  .tab-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+  .tab{
+    padding:9px 16px;border-radius:10px;font-size:13.5px;font-weight:700;
+    border:1.5px solid var(--line);background:#fff;color:var(--navy-2);
+  }
+  .tab.active{background:var(--pink);border-color:var(--pink);color:#fff;}
+
+  .checklist-card{
+    background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;
+  }
+  .checklist-card h4{font-size:15px;display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+  .checklist-card h4 .ic{width:28px;height:28px;border-radius:8px;background:var(--blue-bg-2);display:flex;align-items:center;justify-content:center;}
+  .checklist-card h4 .ic svg{width:14px;height:14px;stroke:var(--navy);}
+  .check-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-top:1px dashed var(--line);}
+  .check-item:first-of-type{border-top:none;}
+  .check-item svg{width:16px;height:16px;stroke:var(--pink-dark);flex-shrink:0;margin-top:2px;}
+  .check-item span{font-size:13.5px;color:var(--ink);}
+
+  /* ---------- Admission steps ---------- */
+  .step-list{display:flex;flex-direction:column;gap:0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px 18px;}
+  .step{display:flex;gap:14px;padding:16px 0;border-top:1px dashed var(--line);}
+  .step:first-child{border-top:none;}
+  .step .num{
+    width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;
+  }
+  .step .txt h5{font-size:14.5px;color:var(--navy-2);font-weight:700;margin-bottom:3px;}
+  .step .txt p{font-size:13px;}
+
+  /* ---------- Payment methods ---------- */
+  .pay-list{display:flex;flex-direction:column;gap:10px;}
+  .pay-item{
+    display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);
+    border-radius:14px;padding:14px 16px;
+  }
+  .pay-item .ic{
+    width:42px;height:42px;border-radius:11px;background:var(--blue-bg-2);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .pay-item .ic svg{width:20px;height:20px;stroke:var(--navy);}
+  .pay-item .txt{flex:1;}
+  .pay-item .txt h5{font-size:14px;font-weight:700;color:var(--ink);}
+  .pay-item .txt p{font-size:12px;}
+  .pay-item .chev{width:16px;height:16px;stroke:var(--muted);flex-shrink:0;}
+
+  .note-box{
+    margin-top:16px;display:flex;gap:10px;background:var(--blue-bg-2);border-radius:12px;padding:13px 15px;
+  }
+  .note-box svg{width:17px;height:17px;stroke:var(--navy);flex-shrink:0;margin-top:1px;}
+  .note-box p{font-size:12.5px;color:var(--navy-2);}
+
+  /* ---------- Footer ---------- */
+  footer{
+    background:var(--navy-2);color:#cfe0f3;padding:34px 20px calc(24px + env(safe-area-inset-bottom,0px));
+    margin-top:10px;
+  }
+  footer .container{display:flex;flex-direction:column;gap:16px;}
+  footer .f-brand{display:flex;align-items:center;gap:10px;}
+  footer .f-brand h4{color:#fff;font-size:15px;}
+  footer p{color:#9fb6cf;font-size:12.5px;}
+  footer .f-links{display:flex;gap:16px;flex-wrap:wrap;}
+  footer .f-links a{font-size:12.5px;color:#cfe0f3;font-weight:600;}
+  .copyright{font-size:11.5px;color:#7f9ab8;border-top:1px solid rgba(255,255,255,0.08);padding-top:14px;}
+
+  /* ---------- Bottom mobile tab bar ---------- */
+  .tabbar{
+    position:sticky;bottom:0;left:0;right:0;z-index:40;
+    background:#fff;border-top:1px solid var(--line);
+    display:flex;justify-content:space-around;
+    padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));
+  }
+  .tabbar a{
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-size:10.5px;font-weight:600;color:var(--muted);padding:4px 8px;border-radius:10px;
+  }
+  .tabbar a svg{width:19px;height:19px;stroke:var(--muted);}
+  .tabbar a.active{color:var(--pink-dark);}
+  .tabbar a.active svg{stroke:var(--pink-dark);}
+
+  @media (min-width:860px){
+    nav.desktop-nav{display:flex;}
+    .menu-btn{display:none;}
+    .tabbar{display:none;}
+    .page-wrap{padding-bottom:0;}
+    .hero h2{max-width:560px;}
+    .feature-grid{grid-template-columns:repeat(4,1fr);}
+    .info-grid{grid-template-columns:repeat(2,1fr);}
+    .photo-banner{height:260px;}
+    .section{padding:44px 20px;}
+    footer .container{flex-direction:row;align-items:center;justify-content:space-between;}
+    .copyright{width:100%;}
+  }
+
+  [data-page]{display:none;}
+  [data-page].active{display:block;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="header-inner">
+      <a href="#" class="brand" data-nav="home">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffd66b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.6V17c0 1 2.7 3 6 3s6-2 6-3v-6.4"/></svg>
+        </div>
+        <div class="brand-text">
+          <h1>Heliger Borden School</h1>
+          <div class="tag">Learn <span class="dot">•</span> Grow <span class="dot">•</span> Achieve</div>
+        </div>
+      </a>
+
+      <nav class="desktop-nav" id="desktopNav">
+        <a href="#" data-nav="home">Home</a>
+        <a href="#" data-nav="about">About</a>
+        <a href="#" data-nav="academics">Academics</a>
+        <a href="#" data-nav="admission">Admission</a>
+        <a href="#" data-nav="fees">Fee Payment</a>
+      </nav>
+
+      <button class="menu-btn" id="openMenu" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-panel">
+      <button class="close-btn" id="closeMenu" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#173a63" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <a href="#" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+      <a href="#" data-nav="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>About</a>
+      <a href="#" data-nav="academics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.6V17c0 1 2.7 3 6 3s6-2 6-3v-6.4"/></svg>Academics</a>
+      <a href="#" data-nav="admission"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 2v4M16 2v4M8 12h8M8 16h5"/></svg>Admission &amp; Fees</a>
+      <a href="#" data-nav="fees"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Fee Payment</a>
+    </div>
+  </div>
+
+  <main class="page-wrap">
+
+    <!-- ================= HOME ================= -->
+    <section data-page="home" class="active">
+      <div class="hero">
+        <div class="container">
+          <div class="eyebrow">Welcome to</div>
+          <h2>Heliger Borden<br>School</h2>
+          <p class="lead">A place where young minds build a brighter future. We provide quality education with modern facilities, experienced teachers, and a safe, caring environment for every student.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#" data-nav="admission">Apply for Admission
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="#" data-nav="about">Explore Our School</a>
+          </div>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></svg></div>
+              <span>Experienced Teachers</span>
+            </div>
+            <div class="feature-card">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-6h6v6"/></svg></div>
+              <span>Modern Facilities</span>
+            </div>
+            <div class="feature-card">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-4.5 7-11V5l-7-2-7 2v5c0 6.5 7 11 7 11Z"/></svg></div>
+              <span>Safe &amp; Caring Environment</span>
+            </div>
+            <div class="feature-card">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+              <span>Holistic Development</span>
+            </div>
+          </div>
+
+          <div class="photo-banner">
+            <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=900&q=80&auto=format&fit=crop" alt="School building">
+            <div class="caption">Better Education<br><span class="accent">Brighter Future</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+    <section data-page="about">
+      <div class="crumb"><a href="#" data-nav="home">Home</a> &nbsp;›&nbsp; <span>About</span></div>
+      <div class="hero" style="padding-top:16px;">
+        <div class="container">
+          <div class="eyebrow">About Us</div>
+          <h2 style="font-size:clamp(24px,4.4vw,34px);">Building Character Through Education</h2>
+          <p class="lead">Heliger Borden School is committed to providing quality education that nurtures talent, builds character and prepares students for a successful future.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="#" data-nav="admission">Our Mission</a></div>
+
+          <div class="photo-banner" style="margin-top:22px;height:200px;">
+            <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=900&q=80&auto=format&fit=crop" alt="Students studying">
+          </div>
+        </div>
+      </div>
+
+      <div class="section" style="padding-top:8px;">
+        <div class="container">
+          <div class="info-grid">
+            <div class="info-card">
+              <div class="head"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg></div><h4>Our Vision</h4></div>
+              <p>To be a leading institution in education and character building.</p>
+            </div>
+            <div class="info-card">
+              <div class="head"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><h4>Our Mission</h4></div>
+              <p>To provide holistic education and create responsible citizens.</p>
+            </div>
+            <div class="info-card">
+              <div class="head"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3-5 7-5s7 1.7 7 5"/><circle cx="17" cy="8" r="2.5"/><path d="M17 12c2.5 0 5 1.4 5 4"/></svg></div><h4>Our Values</h4></div>
+              <p>Discipline &amp; Respect · Hard Work &amp; Kindness</p>
+            </div>
+            <div class="info-card">
+              <div class="head"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 2.7 6.6L21 10l-5 4.2 1.5 6.8L12 17.8 6.5 21l1.5-6.8L3 10l6.3-1.4L12 2Z"/></svg></div><h4>Why Choose Us?</h4></div>
+              <ul>
+                <li>Experienced Faculty</li>
+                <li>Modern Infrastructure</li>
+                <li>Safe Campus</li>
+                <li>Focus on Overall Growth</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ACADEMICS ================= -->
+    <section data-page="academics">
+      <div class="crumb"><a href="#" data-nav="home">Home</a> &nbsp;›&nbsp; <span>Academics</span></div>
+      <div class="hero" style="padding-top:16px;">
+        <div class="container">
+          <div class="eyebrow">Academics</div>
+          <h2 style="font-size:clamp(24px,4.4vw,34px);">Quality Education for a Brighter Tomorrow</h2>
+          <p class="lead">We follow a well-structured curriculum that focuses on overall development, academic excellence and practical learning.</p>
+
+          <div class="tab-row" style="margin-top:20px;">
+            <button class="tab active" data-tab="0">Nursery – UKG</button>
+            <button class="tab" data-tab="1">Class 1 – 5</button>
+            <button class="tab" data-tab="2">Class 6 – 8</button>
+            <button class="tab" data-tab="3">Class 9 – 12</button>
+          </div>
+
+          <div class="checklist-card">
+            <h4><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V6a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2Z"/><path d="M8 8h9M8 12h9"/></svg></div>Curriculum Highlights</h4>
+            <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Activity based learning</span></div>
+            <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Experienced &amp; caring teachers</span></div>
+            <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Regular assessments</span></div>
+            <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Co-curricular activities</span></div>
+            <div class="check-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Personal attention to every child</span></div>
+          </div>
+
+          <div class="photo-banner" style="margin-top:20px;height:180px;background:#1b2e22;">
+            <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=900&q=80&auto=format&fit=crop" alt="Books and stationery">
+            <div class="caption" style="left:16px;right:auto;background:rgba(255,255,255,0.88);">Small Steps<br><span class="accent">Big Dreams</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ADMISSION & FEES ================= -->
+    <section data-page="admission">
+      <div class="crumb"><a href="#" data-nav="home">Home</a> &nbsp;›&nbsp; <span>Admission</span></div>
+      <div class="hero" style="padding-top:16px;">
+        <div class="container">
+          <div class="photo-banner" style="height:130px;margin-bottom:20px;">
+            <img src="https://images.unsplash.com/photo-1588072432836-e10032774350?w=900&q=80&auto=format&fit=crop" alt="Books on a desk">
+            <div class="caption">Your Child's<br><span class="accent">Future Matters</span></div>
+          </div>
+          <div class="eyebrow">Admission &amp; Fees</div>
+          <h2 style="font-size:clamp(24px,4.4vw,34px);">Join Our School Family</h2>
+          <p class="lead">Give your child the best start in life with quality education, modern facilities and expert guidance.</p>
+
+          <div class="step-list" style="margin-top:20px;">
+            <div class="step"><div class="num">1</div><div class="txt"><h5>Fill Online/Offline Application Form</h5><p>Provide basic details and upload documents</p></div></div>
+            <div class="step"><div class="num">2</div><div class="txt"><h5>Entrance Test / Interaction</h5><p>As per class level (if applicable)</p></div></div>
+            <div class="step"><div class="num">3</div><div class="txt"><h5>Document Verification</h5><p>Check original documents</p></div></div>
+            <div class="step"><div class="num">4</div><div class="txt"><h5>Fee Payment</h5><p>Complete admission fee payment</p></div></div>
+            <div class="step"><div class="num">5</div><div class="txt"><h5>Confirmation</h5><p>Get admission confirmation via SMS/Email</p></div></div>
+          </div>
+
+          <div class="hero-actions" style="margin-top:20px;">
+            <button class="btn btn-primary btn-block">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13m0 0-4-4m4 4 4-4"/><path d="M4 17v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+              Download Admission Form
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FEE PAYMENT ================= -->
+    <section data-page="fees">
+      <div class="crumb"><a href="#" data-nav="home">Home</a> &nbsp;›&nbsp; <span>Fee Payment</span></div>
+      <div class="hero" style="padding-top:16px;">
+        <div class="container">
+          <div class="eyebrow">Fee Payment</div>
+          <h2 style="font-size:clamp(24px,4.4vw,34px);">Easy &amp; Secure Payment Options</h2>
+          <p class="lead">You can pay your school fees online through our secure payment gateway. Choose your preferred method below.</p>
+
+          <h3 style="font-size:15px;margin-top:24px;margin-bottom:12px;">Payment Methods</h3>
+          <div class="pay-list">
+            <div class="pay-item">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg></div>
+              <div class="txt"><h5>UPI / Google Pay / PhonePe</h5><p>Instant &amp; Secure</p></div>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+            </div>
+            <div class="pay-item">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="11" rx="1"/><path d="M12 4 3 9h18L12 4Z"/><path d="M7 13v3M12 13v3M17 13v3"/></svg></div>
+              <div class="txt"><h5>Net Banking</h5><p>All Major Banks</p></div>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+            </div>
+            <div class="pay-item">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+              <div class="txt"><h5>Debit / Credit Card</h5><p>Visa, Mastercard, RuPay</p></div>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+            </div>
+            <div class="pay-item">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 21V10l8-6 8 6v11M9 21v-6h6v6"/></svg></div>
+              <div class="txt"><h5>Bank Transfer</h5><p>Use Account Details</p></div>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg>
+            <p>For any payment related queries, please contact the school office.</p>
+          </div>
+
+          <div class="hero-actions" style="margin-top:16px;">
+            <button class="btn btn-primary btn-block">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V6a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2Z"/><path d="M8 8h9M8 12h9"/></svg>
+              View Fee Structure
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <div>
+        <div class="f-brand">
+          <div class="logo" style="width:34px;height:34px;">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#ffd66b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.6V17c0 1 2.7 3 6 3s6-2 6-3v-6.4"/></svg>
+          </div>
+          <h4>Heliger Borden School</h4>
+        </div>
+        <p style="margin-top:8px;max-width:340px;">A place where young minds build a brighter future through quality education and character building.</p>
+      </div>
+      <div class="f-links">
+        <a href="#" data-nav="home">Home</a>
+        <a href="#" data-nav="about">About</a>
+        <a href="#" data-nav="academics">Academics</a>
+        <a href="#" data-nav="admission">Admission</a>
+        <a href="#" data-nav="fees">Fee Payment</a>
+      </div>
+    </div>
+    <div class="container" style="margin-top:6px;">
+      <p class="copyright">© 2026 Heliger Borden School. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <nav class="tabbar" id="tabbar">
+    <a href="#" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+    <a href="#" data-nav="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>About</a>
+    <a href="#" data-nav="academics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.6V17c0 1 2.7 3 6 3s6-2 6-3v-6.4"/></svg>Academics</a>
+    <a href="#" data-nav="admission"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 2v4M16 2v4M8 12h8M8 16h5"/></svg>Admission</a>
+    <a href="#" id="menuTabBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Menu</a>
+  </nav>
+
+</div>
+
+<script>
+  const pages = document.querySelectorAll('[data-page]');
+  const allNavLinks = document.querySelectorAll('[data-nav]');
+  const overlay = document.getElementById('menuOverlay');
+
+  function goTo(name){
+    pages.forEach(p => p.classList.toggle('active', p.dataset.page === name));
+    allNavLinks.forEach(l => l.classList.toggle('active', l.dataset.nav === name));
+    overlay.classList.remove('open');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  allNavLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      goTo(link.dataset.nav);
+    });
+  });
+
+  document.getElementById('openMenu').addEventListener('click', () => overlay.classList.add('open'));
+  document.getElementById('closeMenu').addEventListener('click', () => overlay.classList.remove('open'));
+  document.getElementById('menuTabBtn').addEventListener('click', e => { e.preventDefault(); overlay.classList.add('open'); });
+  overlay.addEventListener('click', e => { if(e.target === overlay) overlay.classList.remove('open'); });
+
+  // Academics tabs (visual only)
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  goTo('home');
+</script>
+</body>
+</html>
